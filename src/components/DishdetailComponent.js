@@ -1,10 +1,9 @@
 import React from 'react';
 import { Card, CardImg, CardText, CardBody,
     CardTitle, Breadcrumb, BreadcrumbItem,  Button, Modal, ModalHeader, ModalBody,
-    Form, FormGroup, Input, Label, Row, Col} from 'reactstrap';
+     Label, Row, Col} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
-import MainComponent from './MainComponent';
     /*componentDidMount() {
         console.log('Dishdetail component ComponentDidMount invoked');
     }*/
@@ -14,8 +13,8 @@ import MainComponent from './MainComponent';
     const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => val && (val.length >= len);
-const isNumber = (val) => !isNaN(Number(val));
-const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
+//const isNumber = (val) => !isNaN(Number(val));
+//const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
 
     function RenderDish({dish}) {
         return (
@@ -32,7 +31,7 @@ const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val
         
     }
 
-    function RenderComments({comments}) {
+    function RenderComments({comments, addComment, dishId}) {
         if (comments != null) {
             const list = comments.map(comment => {
                 return (
@@ -56,7 +55,7 @@ const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val
                         {list}
                     </ul>
                     <div class="row">
-                <CommentForms />
+                    <CommentForm dishId={dishId} addComment={addComment} />
                    </div>
                     {/*<Button outline onClick={this.toggleModal}><span className="fa fa-sign-in fa-lg"></span> Login</Button>*/}
                 </div>
@@ -85,10 +84,10 @@ const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val
                     </div>
                     <div className="row">
                         <RenderDish dish={props.dish} />
-                        <RenderComments comments={props.comments} />
-                        {/*<div className="row">
-                        <CommentForms newComments={props.push(newComments)} />
-                        </div>*/}
+                        <RenderComments comments={props.comments}
+                                addComment={props.addComment}
+                                dishId={props.dish.id}
+                                                         />
                     </div>
                 </div>
             );
@@ -97,7 +96,7 @@ const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val
         }
     }
 
-    class CommentForms extends React.Component{
+    class CommentForm extends React.Component{
         constructor(props){
             super(props);
             this.state= {
@@ -119,9 +118,9 @@ const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val
           }
 
     
-          handleComments(value) {
+          handleComments(values) {
             this.toggleModal();
-            alert(JSON.stringify(value));
+            this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
            // event.preventDefault();
     
         }
@@ -176,7 +175,7 @@ const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val
                                 <Row className="form-group">
                                 <Label htmlFor="message" md={2}>Comments</Label>
                                 <Col>
-                                    <Control.textarea model=".message" id="message" name="message"
+                                    <Control.textarea model=".comment" id="message" name="message"
                                         rows="6"
                                         className="form-control" />
                                 </Col>
@@ -190,71 +189,5 @@ const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val
         }
 
     }
-    {/*class CommentForms extends Component {
-        constructor(props){
-            super(props);
-            this.state = {
-                newComments: false, 
-                isModalOpen: false,
-                handleComments: false
-            
-            };
-            
-    
-
-            this.toggleModal = this.toggleModal.bind(this);
-            this.handleComments = this.handleComments.bind(this);
-          
-  
-        }
-        
-          toggleModal() {
-            this.setState({
-              isModalOpen: !this.state.isModalOpen
-            });
-          }
-
-    
-          handleComments(event) {
-            this.toggleModal();
-            alert("rating: " + this.rating.value + " name: " + this.name.value
-                + " Comment: " + this.comments.value);
-            event.preventDefault();
-    
-        }
-        
-        render() {
-            return(
-                <div>
-                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-                        <ModalHeader toggle={this.toggleModal}>Submit Comments</ModalHeader>
-                        <ModalBody>
-                        <Form onSubmit={this.handleComments}>
-                                <FormGroup>
-                                    <Label htmlFor="comments">rating</Label>
-                                    <Input type="text" id="comments" name="comments"
-                                        innerRef={(input) => this.comments = input} />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label htmlFor="name">Your Name</Label>
-                                    <Input type="name" id="name" name="name"
-                                        innerRef={(input) => this.name = input}  />
-                                </FormGroup>
-                                <Row className="form-group">
-                                <Label htmlFor="message" md={2}>Comments</Label>
-                                <Col md={10}>
-                                    <Control.textarea model=".message" id="message" name="message"
-                                        rows="12"
-                                        className="form-control" />
-                                </Col>
-                            </Row>
-                                <Button type="submit" value="submit" color="primary">Login</Button>
-                            </Form>
-                        </ModalBody>
-                    </Modal>
-                </div>
-            );
-        }
-    }*/}
     
 export default DishDetail;
