@@ -33,7 +33,7 @@ const minLength = (len) => (val) => val && (val.length >= len);
         
     }
 
-    function RenderComments({comments, addComment, dishId}) {
+    function RenderComments({comments, postComment, dishId}) {
         if (comments != null) {
             const list = comments.map(comment => {
                 return (
@@ -57,7 +57,7 @@ const minLength = (len) => (val) => val && (val.length >= len);
                         {list}
                     </ul>
                     <div class="row">
-                    <CommentForm dishId={dishId} addComment={addComment} />
+                    <CommentForm dishId={dishId} postComment={postComment} />
                    </div>
                     {/*<Button outline onClick={this.toggleModal}><span className="fa fa-sign-in fa-lg"></span> Login</Button>*/}
                 </div>
@@ -104,7 +104,7 @@ const minLength = (len) => (val) => val && (val.length >= len);
                     <div className="row">
                         <RenderDish dish={props.dish} />
                         <RenderComments comments={props.comments}
-                                addComment={props.addComment}
+                                postComment={props.postComment}
                                 dishId={props.dish.id}
                                                          />
                     </div>
@@ -139,7 +139,7 @@ const minLength = (len) => (val) => val && (val.length >= len);
     
           handleComments(values) {
             this.toggleModal();
-            this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+            this.props.postComment(this.props.dishId, values.rating, values.author, values.comment);
            // event.preventDefault();
     
         }
