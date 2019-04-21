@@ -3,6 +3,8 @@ import { Breadcrumb, BreadcrumbItem,
     Button, Row, Col, Label } from 'reactstrap';
 import { Control, Form, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom';
+//import { resetFeedbackForm } from '../redux/ActionCreators';
+
 
 
 const required = (val) => val && val.length;
@@ -14,19 +16,16 @@ const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val
 class Contact extends Component {
     constructor(props) {
         super(props);
-
-      
   
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
 
-
     handleSubmit(values) {
-        console.log('Current State is: ' + JSON.stringify(values));
-        alert('Current State is: ' + JSON.stringify(values));
+        this.props.postFeedback(values.firstname, values.lastname, values.telnum, values.email, values.agree, values.contactType, values.message);
+        alert('Thank you for your feedback: ' + JSON.stringify(values));
         this.props.resetFeedbackForm();
-        // event.preventDefault();
+        //event.preventDefault();
     }
 
     
@@ -76,7 +75,7 @@ class Contact extends Component {
                    <div className="col-12">
                       <h3>Send us your Feedback</h3>
                    </div>
-                    <div className="col-12 col-md-9">
+                    <div className="col-12 col-md-9"> 
                     <Form model="feedback" onSubmit={(values) => this.handleSubmit(values)}>
                     <Row className="form-group">
                                 <Label htmlFor="firstname" md={2}>First Name</Label>
